@@ -1,4 +1,7 @@
-package org.example.report;
+package org.example.report.report_types;
+
+import org.example.report.Report;
+import org.example.report.ReportSample;
 
 import java.util.ArrayList;
 import java.util.List;

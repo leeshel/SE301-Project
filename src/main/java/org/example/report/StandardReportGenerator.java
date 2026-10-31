@@ -1,5 +1,8 @@
 package org.example.report;
 
+import org.example.report.report_types.DefaultReportStrategies;
+import org.example.report.report_types.ReportStrategy;
+
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;

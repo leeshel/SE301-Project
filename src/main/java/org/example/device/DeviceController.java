@@ -1,9 +1,19 @@
 package org.example.device;
 
+import org.example.device.device_types.AutomatedDevice;
+import org.example.device.device_types.CoolingFan;
+import org.example.device.device_types.Dehumidifier;
+import org.example.device.device_types.GrowLight;
+import org.example.device.device_types.HeatingUnit;
+import org.example.device.device_types.Humidifier;
+import org.example.device.device_types.NutrientInjector;
+import org.example.device.device_types.ShadeController;
+import org.example.device.device_types.VentilationSystem;
+import org.example.device.device_types.WaterPump;
+import org.example.sensor.ChamberState;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.example.sensor.ChamberState;
 
 public class DeviceController {
 

@@ -52,10 +52,13 @@ src/main/java/org/example/
 ├── FarmSystemFacade.java  # Facade: connects all components
 ├── crop/                  # Crop profiles and how they are stored
 ├── sensor/                # Sensors, chamber monitoring, logs and chamber state
-├── alert/                 # Alert rules, alert log and printing
-├── device/                # Devices, control queue and device thread
+├── alert/                 # Alert log and printing
+│   └── alert_rules/       # One class per alert type
+├── device/                # Control queue and device thread
+│   └── device_types/      # One class per device
 ├── usage/                 # Water, energy and nutrient usage
 └── report/                # Report data, generation and chamber summaries
+    └── report_types/      # One class per report
 scripts/                   # Behaviour comparison and stress tests
 ```
 
@@ -89,15 +92,22 @@ org/example/
 
 ```text
 alert/
-├── Alert.java                  # Immutable alert result.
+├── Alert.java         # Immutable alert result.
+├── alert_rules/       # One class per alert type; see below.
+├── AlertHandler.java  # Interface for reacting to an alert.
+├── AlertListener.java # Runs the rules on each reading and passes alerts to the handlers.
+├── AlertLog.java      # Stores active and archived alerts.
+├── AlertPrinter.java  # Prints each alert to the console.
+├── AlertSeverity.java # Defines INFO, WARNING, and CRITICAL levels.
+└── AlertType.java     # Enumerates supported alert categories.
+```
+
+### `src/main/java/org/example/alert/alert_rules`
+
+```text
+alert/alert_rules/
 ├── AlertChecks.java            # Range and minimum checks shared by the rules.
-├── AlertHandler.java           # Interface for reacting to an alert.
-├── AlertListener.java          # Runs the rules on each reading and passes alerts to the handlers.
-├── AlertLog.java               # Stores active and archived alerts.
-├── AlertPrinter.java           # Prints each alert to the console.
 ├── AlertRule.java              # Interface for one type of alert check.
-├── AlertSeverity.java          # Defines INFO, WARNING, and CRITICAL levels.
-├── AlertType.java              # Enumerates supported alert categories.
 ├── DefaultAlertRules.java      # Lists the alert rules the application uses.
 ├── HumidityRule.java           # Alerts when humidity is above or below the crop's range.
 ├── LowLightRule.java           # Alerts when light is below 500 lux.
@@ -123,45 +133,59 @@ crop/
 
 ```text
 device/
-├── AutomatedDevice.java    # Interface for a device that changes a chamber.
 ├── ControlQueue.java       # Bounded queue of device requests.
 ├── ControlRequest.java     # Immutable request for one device in one chamber.
-├── CoolingFan.java         # Reduces temperature.
-├── Dehumidifier.java       # Reduces humidity.
+├── device_types/           # One class per device; see below.
 ├── DeviceAlertHandler.java # Maps each alert to a device request.
 ├── DeviceController.java   # Finds a device by name and activates it.
-├── DeviceWorker.java       # Runs queued device requests on its own thread.
-├── GrowLight.java          # Increases light level.
-├── HeatingUnit.java        # Increases temperature.
-├── Humidifier.java         # Increases humidity.
-├── NutrientInjector.java   # Increases nutrient level.
-├── ShadeController.java    # Reduces light level.
-├── VentilationSystem.java  # Reduces humidity through air circulation.
-└── WaterPump.java          # Increases soil moisture.
+└── DeviceWorker.java       # Runs queued device requests on its own thread.
+```
+
+### `src/main/java/org/example/device/device_types`
+
+```text
+device/device_types/
+├── AutomatedDevice.java   # Interface for a device that changes a chamber.
+├── CoolingFan.java        # Reduces temperature.
+├── Dehumidifier.java      # Reduces humidity.
+├── GrowLight.java         # Increases light level.
+├── HeatingUnit.java       # Increases temperature.
+├── Humidifier.java        # Increases humidity.
+├── NutrientInjector.java  # Increases nutrient level.
+├── ShadeController.java   # Reduces light level.
+├── VentilationSystem.java # Reduces humidity through air circulation.
+└── WaterPump.java         # Increases soil moisture.
 ```
 
 ### `src/main/java/org/example/report`
 
 ```text
 report/
-├── ChamberSummary.java                    # Alert and action counts for one chamber.
-├── ChamberSummaryTracker.java             # Keeps one summary per chamber.
-├── CropReportStrategy.java                # Builds the weekly crop report.
-├── DailyReportService.java                # Prints, archives, and saves the daily report.
-├── DefaultReportStrategies.java           # Lists the five supported reports.
-├── EnergyConsumptionReportStrategy.java   # Builds the energy consumption report.
-├── EnvironmentalReportStrategy.java       # Builds the daily environmental report.
-├── NutrientConsumptionReportStrategy.java # Builds the nutrient consumption report.
-├── Report.java                            # Immutable completed report with text output.
-├── ReportGenerator.java                   # Interface for generating reports.
-├── ReportLines.java                       # Logic shared by the reports.
-├── ReportSample.java                      # Validated environmental and resource-use data.
-├── ReportSampleListener.java              # Saves one report sample per chamber cycle.
-├── ReportSampleStore.java                 # Thread-safe list of report samples.
-├── ReportStrategy.java                    # Interface for building one type of report.
-├── ReportType.java                        # Enumerates the five supported report types.
-├── StandardReportGenerator.java           # Selects the report strategy and filters samples.
-└── WaterUsageReportStrategy.java          # Builds the water usage report.
+├── ChamberSummary.java          # Alert and action counts for one chamber.
+├── ChamberSummaryTracker.java   # Keeps one summary per chamber.
+├── DailyReportService.java      # Prints, archives, and saves the daily report.
+├── Report.java                  # Immutable completed report with text output.
+├── report_types/                # One class per report; see below.
+├── ReportGenerator.java         # Interface for generating reports.
+├── ReportSample.java            # Validated environmental and resource-use data.
+├── ReportSampleListener.java    # Saves one report sample per chamber cycle.
+├── ReportSampleStore.java       # Thread-safe list of report samples.
+├── ReportType.java              # Enumerates the five supported report types.
+└── StandardReportGenerator.java # Selects the report strategy and filters samples.
+```
+
+### `src/main/java/org/example/report/report_types`
+
+```text
+report/report_types/
+├── DailyEnvironmentalReport.java  # Builds the daily environmental report.
+├── DefaultReportStrategies.java   # Lists the five supported reports.
+├── EnergyConsumptionReport.java   # Builds the energy consumption report.
+├── NutrientConsumptionReport.java # Builds the nutrient consumption report.
+├── ReportLines.java               # Logic shared by the reports.
+├── ReportStrategy.java            # Interface for building one type of report.
+├── WaterUsageReport.java          # Builds the water usage report.
+└── WeeklyCropReport.java          # Builds the weekly crop report.
 ```
 
 ### `src/main/java/org/example/sensor`
@@ -226,6 +250,8 @@ mkdir -p /tmp/svfrms-check
 javac -d /tmp/svfrms-check/classes $(find src/main/java -name '*.java') scripts/concurrency/org/example/ConcurrencyCheck.java
 (cd /tmp/svfrms-check && java -cp classes org.example.ConcurrencyCheck 200)
 ```
+
+**Add a new alert, report or device.** Add a class to `alert/alert_rules/`, `report/report_types/` or `device/device_types/`, then one line to `DefaultAlertRules`, `DefaultReportStrategies` or `DeviceController`. A new alert or report also needs a value in `AlertType` or `ReportType`.
 
 **Add a new crop.** Add one entry to `DefaultCropProfiles`, then assign it to a chamber in `SVFRMS.java`:
 

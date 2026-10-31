@@ -1,8 +1,12 @@
-package org.example.report;
+package org.example.report.report_types;
+
+import org.example.report.Report;
+import org.example.report.ReportSample;
+import org.example.report.ReportType;
 
 import java.util.List;
 
-public class EnvironmentalReportStrategy implements ReportStrategy {
+public class DailyEnvironmentalReport implements ReportStrategy {
     @Override
     public ReportType getType() {
         return ReportType.DAILY_ENVIRONMENTAL;

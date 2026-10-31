@@ -1,5 +1,6 @@
 package org.example.alert;
 
+import org.example.alert.alert_rules.AlertRule;
 import org.example.crop.CropProfile;
 import org.example.crop.CropRepository;
 import org.example.sensor.ReadingListener;

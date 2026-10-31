@@ -4,7 +4,7 @@ import org.example.alert.Alert;
 import org.example.alert.AlertLog;
 import org.example.alert.AlertSeverity;
 import org.example.alert.AlertType;
-import org.example.device.AutomatedDevice;
+import org.example.device.device_types.AutomatedDevice;
 import org.example.device.ControlQueue;
 import org.example.device.ControlRequest;
 import org.example.device.DeviceController;

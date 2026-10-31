@@ -3,6 +3,8 @@ package org.example.device;
 import org.example.alert.Alert;
 import org.example.alert.AlertHandler;
 import org.example.alert.AlertType;
+import org.example.device.device_types.Dehumidifier;
+import org.example.device.device_types.Humidifier;
 
 import java.util.Map;
 

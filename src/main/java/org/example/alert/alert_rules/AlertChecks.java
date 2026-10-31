@@ -1,5 +1,8 @@
-package org.example.alert;
+package org.example.alert.alert_rules;
 
+import org.example.alert.Alert;
+import org.example.alert.AlertSeverity;
+import org.example.alert.AlertType;
 import org.example.crop.Range;
 import org.example.sensor.SensorReading;
 

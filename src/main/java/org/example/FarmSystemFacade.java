@@ -3,7 +3,7 @@ package org.example;
 import org.example.alert.AlertListener;
 import org.example.alert.AlertLog;
 import org.example.alert.AlertPrinter;
-import org.example.alert.DefaultAlertRules;
+import org.example.alert.alert_rules.DefaultAlertRules;
 import org.example.crop.CropProfile;
 import org.example.crop.CropRepository;
 import org.example.crop.DefaultCropProfiles;

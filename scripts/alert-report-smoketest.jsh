@@ -5,8 +5,8 @@ import java.time.Instant;
 import java.util.List;
 
 import org.example.alert.Alert;
-import org.example.alert.AlertRule;
-import org.example.alert.DefaultAlertRules;
+import org.example.alert.alert_rules.AlertRule;
+import org.example.alert.alert_rules.DefaultAlertRules;
 import org.example.crop.CropProfile;
 import org.example.crop.CropBuilder;
 import org.example.report.Report;

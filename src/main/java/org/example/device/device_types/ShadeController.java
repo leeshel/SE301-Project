@@ -1,4 +1,4 @@
-package org.example.device;
+package org.example.device.device_types;
 
 import org.example.sensor.ChamberState;
 import org.example.sensor.SensorType;

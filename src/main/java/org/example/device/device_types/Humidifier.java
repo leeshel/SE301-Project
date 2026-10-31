@@ -1,20 +1,20 @@
-package org.example.device;
+package org.example.device.device_types;
 
 import org.example.sensor.ChamberState;
 import org.example.sensor.SensorType;
 
-public class Dehumidifier implements AutomatedDevice {
+public class Humidifier implements AutomatedDevice {
 
     @Override
     public String getDeviceName() {
-        return "Dehumidifier";
+        return "Humidifier";
     }
 
     @Override
     public String activate(ChamberState state) {
-        double humidity = Math.max(30, state.getValue(SensorType.HUMIDITY) - 10);
+        double humidity = Math.min(100, state.getValue(SensorType.HUMIDITY) + 10);
         state.setValue(SensorType.HUMIDITY, humidity);
 
-        return "Humidity reduced to " + humidity + "%";
+        return "Humidity increased to " + humidity + "%";
     }
 }

@@ -1,4 +1,4 @@
-package org.example.alert;
+package org.example.alert.alert_rules;
 
 import java.util.List;
 
