@@ -23,6 +23,10 @@ public class ReportSampleListener implements ReadingListener {
 
     @Override
     public void onReading(SensorReading reading) {
+        // An invalid reading raises a sensor failure alert, but cannot go into a sample.
+        if (!Double.isFinite(reading.value())) {
+            return;
+        }
         cycleValues.put(reading.type(), reading.value());
         if (cycleValues.size() < SensorType.values().length) {
             return;

@@ -3,8 +3,7 @@ package org.example;
 import org.example.alert.AlertListener;
 import org.example.alert.AlertLog;
 import org.example.alert.AlertPrinter;
-import org.example.alert.LegacyCompatibleAlertEvaluator;
-import org.example.alert.ReadingAlertEvaluator;
+import org.example.alert.DefaultAlertRules;
 import org.example.crop.CropProfile;
 import org.example.crop.CropRepository;
 import org.example.crop.DefaultCropProfiles;
@@ -60,9 +59,8 @@ public class FarmSystemFacade {
     private final ReportSampleStore samples = new ReportSampleStore();
     private final DailyReportService reports = new DailyReportService(
             alertLog, usage, summaries, samples, new StandardReportGenerator());
-    private final ReadingAlertEvaluator evaluator = new LegacyCompatibleAlertEvaluator();
     // Handler order matches legacy: summary, alert list and printout, usage, then device request.
-    private final AlertListener alertListener = new AlertListener(crops, evaluator, List.of(
+    private final AlertListener alertListener = new AlertListener(crops, DefaultAlertRules.create(), List.of(
             summaries, alertLog, new AlertPrinter(), usage, new DeviceAlertHandler(controlQueue)));
     private final ChamberStateListener stateListener = new ChamberStateListener(states);
     private final List<ChamberMonitor> chamberMonitors = new ArrayList<>();

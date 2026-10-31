@@ -65,7 +65,7 @@ public class ConcurrencyCheck {
 
     private static void alertLog() throws Exception {
         AlertLog log = new AlertLog();
-        Alert alert = new Alert("CH1", "Tomato", AlertType.TEMPERATURE, AlertSeverity.WARNING,
+        Alert alert = new Alert("CH1", "Tomato", AlertType.HIGH_TEMPERATURE, AlertSeverity.WARNING,
                 "High Temp", Instant.now());
         int each = 50_000;
         String crash = hammer(THREADS, thread -> {

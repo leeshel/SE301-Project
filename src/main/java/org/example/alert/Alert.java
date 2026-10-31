@@ -12,9 +12,9 @@ public record Alert(
 
     public String displayText() {
         return switch (type) {
-            case TEMPERATURE, HUMIDITY, LOW_SOIL_MOISTURE -> chamber + " " + crop + " " + message;
             case LOW_LIGHT, NUTRIENT_DEFICIENCY -> chamber + " " + message;
             case SENSOR_FAILURE -> chamber + " Sensor Failure";
+            default -> chamber + " " + crop + " " + message;
         };
     }
 }

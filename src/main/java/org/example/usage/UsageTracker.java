@@ -29,16 +29,9 @@ public class UsageTracker implements AlertHandler {
     public void onAlert(Alert alert) {
         CropUsageRates crop = rates.getOrDefault(alert.crop(), CropUsageRates.NONE);
         switch (alert.type()) {
-            case TEMPERATURE -> {
-                double energy = alert.message().equals("High Temp")
-                        ? crop.highTempEnergyKwh() : crop.lowTempEnergyKwh();
-                addUsage(alert.chamber(), 0, energy, 0);
-            }
-            case HUMIDITY -> {
-                if (alert.message().equals("Low Humidity")) {
-                    addUsage(alert.chamber(), crop.lowHumidityWaterLitres(), 0, 0);
-                }
-            }
+            case HIGH_TEMPERATURE -> addUsage(alert.chamber(), 0, crop.highTempEnergyKwh(), 0);
+            case LOW_TEMPERATURE -> addUsage(alert.chamber(), 0, crop.lowTempEnergyKwh(), 0);
+            case LOW_HUMIDITY -> addUsage(alert.chamber(), crop.lowHumidityWaterLitres(), 0, 0);
             case LOW_SOIL_MOISTURE -> addUsage(alert.chamber(), LOW_SOIL_WATER_LITRES, 0, 0);
             case NUTRIENT_DEFICIENCY -> addUsage(alert.chamber(), 0, 0, INJECTOR_NUTRIENT_PERCENT);
             default -> {
