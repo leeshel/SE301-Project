@@ -1,4 +1,4 @@
-package org.device;
+package org.example.device;
 
 import java.util.HashMap;
 import java.util.Map;

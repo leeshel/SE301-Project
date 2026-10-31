@@ -1,4 +1,4 @@
-package org.device;
+package org.example.device;
 
 import org.example.SVFRMS.ChamberState;
 

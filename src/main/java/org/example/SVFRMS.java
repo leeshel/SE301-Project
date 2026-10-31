@@ -17,6 +17,7 @@ import org.example.sensor.ChamberMonitor;
 import org.example.sensor.ReadingListener;
 import org.example.sensor.Sensor;
 import org.example.sensor.SensorFactory;
+import org.example.device.DeviceController;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -53,6 +54,7 @@ public class SVFRMS {
     static final LegacyCompatibleAlertEvaluator alertEvaluator =
             new LegacyCompatibleAlertEvaluator();
     static final ReportGenerator reportGenerator = new StandardReportGenerator();
+    private static final DeviceController deviceController = new DeviceController();
     static final List<ReportSample> reportSamples =
             Collections.synchronizedList(new ArrayList<>());
 
@@ -60,12 +62,12 @@ public class SVFRMS {
         DefaultCropProfiles.loadInto(cropRepository);
     }
 
-    static class ChamberState {
-        double temperature = 24;
-        double humidity = 70;
-        double soilMoisture = 60;
-        double lightLevel = 600;
-        double nutrientLevel = 70;
+    public static class ChamberState {
+        public double temperature = 24;
+        public double humidity = 70;
+        public double soilMoisture = 60;
+        public double lightLevel = 600;
+        public double nutrientLevel = 70;
     }
 
     static class ChamberSummary {
@@ -124,42 +126,18 @@ public class SVFRMS {
     public static void activateControl(String chamber, String control){
         ChamberState state = getChamberState(chamber);
 
-            if(control.equals("Cooling Fan")){
-                state.temperature = Math.max(18, state.temperature - 5);
-                handleEvent("TRACK_ACTION", chamber, "", "Cooling Fan Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Cooling Fan Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Temperature reduced to " + state.temperature + "C");
-            }
-            else if(control.equals("Water Pump")){
-                state.soilMoisture = Math.min(100, state.soilMoisture + 20);
-                handleEvent("TRACK_ACTION", chamber, "", "Water Pump Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Water Pump Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Soil moisture increased to " + state.soilMoisture + "%");
-            }
-            else if(control.equals("Nutrient Injector")){
-                state.nutrientLevel = Math.min(100, state.nutrientLevel + 15);
-                handleEvent("TRACK_ACTION", chamber, "", "Nutrient Injector Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Nutrient Injector Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Nutrient level increased to " + state.nutrientLevel + "%");
-            }
-            else if(control.equals("Humidifier")){
-                state.humidity = Math.min(100, state.humidity + 10);
-                handleEvent("TRACK_ACTION", chamber, "", "Humidifier Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Humidifier Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Humidity increased to " + state.humidity + "%");
-            }
-            else if(control.equals("Dehumidifier")){
-                state.humidity = Math.max(30, state.humidity - 10);
-                handleEvent("TRACK_ACTION", chamber, "", "Dehumidifier Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Dehumidifier Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Humidity reduced to " + state.humidity + "%");
-            }
-            else if(control.equals("Grow Light")){
-                state.lightLevel = Math.min(1000, state.lightLevel + 150);
-                handleEvent("TRACK_ACTION", chamber, "", "Grow Light Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Grow Light Activated");
-                handleEvent("CONTROL_LOG", chamber, "", "Light level increased to " + state.lightLevel + " lux");
-            }
+        // Preserve the legacy behaviour for unrecognised control requests:
+        // ignore them without recording an action.
+        if (!deviceController.hasDevice(control)) {
+            return;
+        }
+
+        String result = deviceController.activateDevice(control, state);
+        String activationMessage = control + " Activated";
+
+        handleEvent("TRACK_ACTION", chamber, "", activationMessage);
+        handleEvent("CONTROL_LOG", chamber, "", activationMessage);
+        handleEvent("CONTROL_LOG", chamber, "", result);
     }
 
     public static void addControlRequest(String chamber, String control){
