@@ -1,6 +1,7 @@
-package org.device;
+package org.example.device;
 
-import org.example.SVFRMS.ChamberState;
+import org.example.sensor.ChamberState;
+import org.example.sensor.SensorType;
 
 public class CoolingFan implements AutomatedDevice {
 
@@ -11,8 +12,9 @@ public class CoolingFan implements AutomatedDevice {
 
     @Override
     public String activate(ChamberState state) {
-        state.temperature = Math.max(18, state.temperature - 5);
+        double temperature = Math.max(18, state.getValue(SensorType.TEMPERATURE) - 5);
+        state.setValue(SensorType.TEMPERATURE, temperature);
 
-        return "Temperature reduced to " + state.temperature + "C";
+        return "Temperature reduced to " + temperature + "C";
     }
 }

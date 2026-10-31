@@ -32,7 +32,7 @@ public record EnvironmentalObservation(
         return values.containsKey(type);
     }
 
-    public double valueOf(SensorType type) {
+    public double getValue(SensorType type) {
         Double value = values.get(type);
         if (value == null) {
             throw new IllegalArgumentException("No reading for " + type);
@@ -40,7 +40,7 @@ public record EnvironmentalObservation(
         return value;
     }
 
-    public boolean hasInvalidValue(SensorType type) {
-        return !hasValue(type) || !Double.isFinite(valueOf(type));
+    public boolean isMissingOrInvalid(SensorType type) {
+        return !hasValue(type) || !Double.isFinite(getValue(type));
     }
 }

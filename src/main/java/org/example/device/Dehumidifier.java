@@ -1,6 +1,7 @@
-package org.device;
+package org.example.device;
 
-import org.example.SVFRMS.ChamberState;
+import org.example.sensor.ChamberState;
+import org.example.sensor.SensorType;
 
 public class Dehumidifier implements AutomatedDevice {
 
@@ -11,8 +12,9 @@ public class Dehumidifier implements AutomatedDevice {
 
     @Override
     public String activate(ChamberState state) {
-        state.humidity = Math.max(30, state.humidity - 10);
+        double humidity = Math.max(30, state.getValue(SensorType.HUMIDITY) - 10);
+        state.setValue(SensorType.HUMIDITY, humidity);
 
-        return "Humidity reduced to " + state.humidity + "%";
+        return "Humidity reduced to " + humidity + "%";
     }
 }

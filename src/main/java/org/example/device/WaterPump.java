@@ -1,6 +1,7 @@
-package org.device;
+package org.example.device;
 
-import org.example.SVFRMS.ChamberState;
+import org.example.sensor.ChamberState;
+import org.example.sensor.SensorType;
 
 public class WaterPump implements AutomatedDevice {
 
@@ -11,8 +12,9 @@ public class WaterPump implements AutomatedDevice {
 
     @Override
     public String activate(ChamberState state) {
-        state.soilMoisture = Math.min(100, state.soilMoisture + 20);
+        double soilMoisture = Math.min(100, state.getValue(SensorType.SOIL_MOISTURE) + 20);
+        state.setValue(SensorType.SOIL_MOISTURE, soilMoisture);
 
-        return "Soil moisture increased to " + state.soilMoisture + "%";
+        return "Soil moisture increased to " + soilMoisture + "%";
     }
 }

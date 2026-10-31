@@ -1,6 +1,7 @@
-package org.device;
+package org.example.device;
 
-import org.example.SVFRMS.ChamberState;
+import org.example.sensor.ChamberState;
+import org.example.sensor.SensorType;
 
 public class ShadeController implements AutomatedDevice {
 
@@ -11,8 +12,9 @@ public class ShadeController implements AutomatedDevice {
 
     @Override
     public String activate(ChamberState state) {
-        state.lightLevel = Math.max(0, state.lightLevel - 150);
+        double lightLevel = Math.max(0, state.getValue(SensorType.LIGHT_LEVEL) - 150);
+        state.setValue(SensorType.LIGHT_LEVEL, lightLevel);
 
-        return "Light level reduced to " + state.lightLevel + " lux";
+        return "Light level reduced to " + lightLevel + " lux";
     }
 }

@@ -9,4 +9,12 @@ public record Alert(
         AlertSeverity severity,
         String message,
         Instant occurredAt) {
+
+    public String displayText() {
+        return switch (type) {
+            case TEMPERATURE, HUMIDITY, LOW_SOIL_MOISTURE -> chamber + " " + crop + " " + message;
+            case LOW_LIGHT, NUTRIENT_DEFICIENCY -> chamber + " " + message;
+            case SENSOR_FAILURE -> chamber + " Sensor Failure";
+        };
+    }
 }

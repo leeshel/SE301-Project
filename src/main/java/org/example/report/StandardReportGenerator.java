@@ -14,13 +14,13 @@ public final class StandardReportGenerator implements ReportGenerator {
             new EnumMap<>(ReportType.class);
 
     public StandardReportGenerator() {
-        strategies.put(ReportType.DAILY_ENVIRONMENTAL, this::environmentalReport);
-        strategies.put(ReportType.WEEKLY_CROP, this::cropReport);
-        strategies.put(ReportType.WATER_USAGE, samples -> usageReport("Water Usage", samples,
+        strategies.put(ReportType.DAILY_ENVIRONMENTAL, this::buildEnvironmentalReport);
+        strategies.put(ReportType.WEEKLY_CROP, this::buildCropReport);
+        strategies.put(ReportType.WATER_USAGE, samples -> buildUsageReport("Water Usage", samples,
                 ReportSample::waterLitres, "L"));
-        strategies.put(ReportType.ENERGY_CONSUMPTION, samples -> usageReport("Energy Consumption",
+        strategies.put(ReportType.ENERGY_CONSUMPTION, samples -> buildUsageReport("Energy Consumption",
                 samples, ReportSample::energyKwh, "kWh"));
-        strategies.put(ReportType.NUTRIENT_CONSUMPTION, samples -> usageReport(
+        strategies.put(ReportType.NUTRIENT_CONSUMPTION, samples -> buildUsageReport(
                 "Nutrient Consumption", samples, ReportSample::nutrientsUsedPercent, "%"));
     }
 
@@ -44,8 +44,8 @@ public final class StandardReportGenerator implements ReportGenerator {
         return new Report(type, periodStart, periodEnd, Instant.now(), lines);
     }
 
-    private List<String> environmentalReport(List<ReportSample> samples) {
-        List<String> lines = header("Daily Environmental Report", samples);
+    private List<String> buildEnvironmentalReport(List<ReportSample> samples) {
+        List<String> lines = buildHeader("Daily Environmental Report", samples);
         if (samples.isEmpty()) {
             lines.add("No environmental readings recorded.");
             return lines;
@@ -58,8 +58,8 @@ public final class StandardReportGenerator implements ReportGenerator {
         return lines;
     }
 
-    private List<String> cropReport(List<ReportSample> samples) {
-        List<String> lines = header("Weekly Crop Report", samples);
+    private List<String> buildCropReport(List<ReportSample> samples) {
+        List<String> lines = buildHeader("Weekly Crop Report", samples);
         samples.stream().map(ReportSample::crop).distinct().sorted()
                 .forEach(crop -> {
                     List<ReportSample> cropSamples = samples.stream()
@@ -73,16 +73,16 @@ public final class StandardReportGenerator implements ReportGenerator {
         return lines;
     }
 
-    private List<String> usageReport(String title, List<ReportSample> samples,
+    private List<String> buildUsageReport(String title, List<ReportSample> samples,
                                      Function<ReportSample, Double> value, String unit) {
-        List<String> lines = header(title + " Report", samples);
+        List<String> lines = buildHeader(title + " Report", samples);
         double total = samples.stream().mapToDouble(value::apply).sum();
         lines.add(String.format("Total: %.2f %s", total, unit));
         lines.add("Samples: " + samples.size());
         return lines;
     }
 
-    private List<String> header(String title, List<ReportSample> samples) {
+    private List<String> buildHeader(String title, List<ReportSample> samples) {
         List<String> lines = new ArrayList<>();
         lines.add("===== " + title + " =====");
         lines.add("Readings included: " + samples.size());

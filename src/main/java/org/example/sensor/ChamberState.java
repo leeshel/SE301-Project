@@ -12,11 +12,16 @@ public class ChamberState {
         }
     }
 
-    public synchronized double getValue(SensorType type) {
-        return values.get(type);
+    // Locks on this object so DeviceController can hold the same lock across a read and a write.
+    public double getValue(SensorType type) {
+        synchronized (this) {
+            return values.get(type);
+        }
     }
 
-    public synchronized void setValue(SensorType type, double value) {
-        values.put(type, value);
+    public void setValue(SensorType type, double value) {
+        synchronized (this) {
+            values.put(type, value);
+        }
     }
 }

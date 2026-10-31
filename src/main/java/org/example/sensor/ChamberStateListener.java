@@ -9,6 +9,6 @@ public class ChamberStateListener implements ReadingListener {
 
     @Override
     public void onReading(SensorReading reading) {
-        store.getState(reading.chamber()).setValue(reading.type(), reading.value());
+        store.getOrCreateState(reading.chamber()).setValue(reading.type(), reading.value());
     }
 }

@@ -1,16 +1,16 @@
-package org.device;
+package org.example.device;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.example.SVFRMS.ChamberState;
+import org.example.sensor.ChamberState;
 
 public class DeviceController {
 
     private final Map<String, AutomatedDevice> devices;
 
     public DeviceController() {
-        devices = new HashMap<>();
+        devices = new ConcurrentHashMap<>();
 
         registerDevice(new CoolingFan());
         registerDevice(new WaterPump());
@@ -39,7 +39,10 @@ public class DeviceController {
             );
         }
 
-        return device.activate(state);
+        // A device reads a value and writes it back, so both must happen under one lock.
+        synchronized (state) {
+            return device.activate(state);
+        }
     }
 
     // Check whether a device is registered

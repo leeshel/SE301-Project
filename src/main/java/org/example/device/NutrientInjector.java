@@ -1,6 +1,7 @@
-package org.device;
+package org.example.device;
 
-import org.example.SVFRMS.ChamberState;
+import org.example.sensor.ChamberState;
+import org.example.sensor.SensorType;
 
 public class NutrientInjector implements AutomatedDevice {
 
@@ -11,8 +12,9 @@ public class NutrientInjector implements AutomatedDevice {
 
     @Override
     public String activate(ChamberState state) {
-        state.nutrientLevel = Math.min(100, state.nutrientLevel + 15);
+        double nutrientLevel = Math.min(100, state.getValue(SensorType.NUTRIENT_LEVEL) + 15);
+        state.setValue(SensorType.NUTRIENT_LEVEL, nutrientLevel);
 
-        return "Nutrient level increased to " + state.nutrientLevel + "%";
+        return "Nutrient level increased to " + nutrientLevel + "%";
     }
 }
