@@ -11,6 +11,8 @@ alert/
 ├── AlertSeverity.java            # Defines INFO, WARNING, and CRITICAL levels.
 ├── AlertType.java                # Enumerates supported alert categories.
 ├── EnvironmentalObservation.java # Validated readings for one chamber.
+├── LegacyCompatibleAlertEvaluator.java # Preserves legacy alert thresholds.
+├── ReadingAlertEvaluator.java    # Interface for reading-level alert policies.
 └── StandardAlertEvaluator.java   # Applies the standard alert rules.
 ```
 
@@ -26,6 +28,31 @@ report/
 ```
 
 ## Design and Concurrency Notes
+
+### Integrated flow
+
+The legacy entry point now uses the modernised components without changing its
+legacy alert messages, control requests, sensor ranges, or resource increments:
+
+```text
+SensorFactory/ChamberMonitor
+        ↓ SensorReading
+SVFRMS processSensor
+        ↓ CropRepository/CropProfile
+LegacyCompatibleAlertEvaluator
+        ↓ Alert
+legacy alert, control, and summary handling
+        ↓ ReportSample
+StandardReportGenerator
+        ↓
+archive/daily_report.txt
+```
+
+`LegacyCompatibleAlertEvaluator` deliberately keeps the original thresholds:
+nutrient alerts below 40%, light alerts below 500 lux, and the original
+crop-specific temperature, humidity, and soil-moisture rules. The generic
+`StandardAlertEvaluator` remains available for the standalone specification
+policy.
 
 ### SOLID principles
 
@@ -59,6 +86,8 @@ report/
   deadlock path.
 - Future integrations should avoid nested locks and should maintain one
   consistent lock-acquisition order.
-- These claims apply to the refactored components documented here; the legacy
-  `SVFRMS` execution path must still be integrated and tested before the whole
-  application can be declared free of race conditions and deadlocks.
+- The integrated report sample collection is synchronized, and the modern
+  sensor monitor publishes readings without shared mutable state of its own.
+- The legacy global counters and maps remain part of the compatibility path;
+  they require a separate concurrency refactor before the whole application can
+  be declared free of race conditions.
